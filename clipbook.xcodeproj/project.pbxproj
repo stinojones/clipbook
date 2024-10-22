@@ -29,20 +29,68 @@
 		89F5F3C52CA9FD1F0006CFC0 /* clipbookUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clipbookUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		89F5F3EF2CAA00210006CFC0 /* Exceptions for "clipbook" folder in "clipbook" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				clipbookApp.swift,
+				ContentView.swift,
+				"Preview Content/Preview Assets.xcassets",
+				View/CameraView.swift,
+				View/Home.swift,
+				ViewModel/CameraViewModel.swift,
+			);
+			target = 89F5F3AA2CA9FD1E0006CFC0 /* clipbook */;
+		};
+		89F5F3F02CAA00210006CFC0 /* Exceptions for "clipbook" folder in "clipbookUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				clipbookApp.swift,
+				ContentView.swift,
+				"Preview Content/Preview Assets.xcassets",
+			);
+			target = 89F5F3C42CA9FD1F0006CFC0 /* clipbookUITests */;
+		};
+		89F5F3F92CAA00D50006CFC0 /* Exceptions for "clipbookTests" folder in "clipbookTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				clipbookTests.swift,
+			);
+			target = 89F5F3BA2CA9FD1F0006CFC0 /* clipbookTests */;
+		};
+		89F5F3FA2CAA00D50006CFC0 /* Exceptions for "clipbookTests" folder in "clipbookUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				clipbookTests.swift,
+			);
+			target = 89F5F3C42CA9FD1F0006CFC0 /* clipbookUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		89F5F3AD2CA9FD1E0006CFC0 /* clipbook */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = clipbook;
-			sourceTree = "<group>";
-		};
-		89F5F3BE2CA9FD1F0006CFC0 /* clipbookTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = clipbookTests;
-			sourceTree = "<group>";
-		};
 		89F5F3C82CA9FD1F0006CFC0 /* clipbookUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = clipbookUITests;
+			sourceTree = "<group>";
+		};
+		89F5F3EA2CAA00210006CFC0 /* clipbook */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				89F5F3EF2CAA00210006CFC0 /* Exceptions for "clipbook" folder in "clipbook" target */,
+				89F5F3F02CAA00210006CFC0 /* Exceptions for "clipbook" folder in "clipbookUITests" target */,
+			);
+			path = clipbook;
+			sourceTree = "<group>";
+		};
+		89F5F3F72CAA00D50006CFC0 /* clipbookTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				89F5F3F92CAA00D50006CFC0 /* Exceptions for "clipbookTests" folder in "clipbookTests" target */,
+				89F5F3FA2CAA00D50006CFC0 /* Exceptions for "clipbookTests" folder in "clipbookUITests" target */,
+			);
+			path = clipbookTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -75,10 +123,10 @@
 		89F5F3A22CA9FD1E0006CFC0 = {
 			isa = PBXGroup;
 			children = (
-				89F5F3AD2CA9FD1E0006CFC0 /* clipbook */,
-				89F5F3BE2CA9FD1F0006CFC0 /* clipbookTests */,
 				89F5F3C82CA9FD1F0006CFC0 /* clipbookUITests */,
 				89F5F3AC2CA9FD1E0006CFC0 /* Products */,
+				89F5F3EA2CAA00210006CFC0 /* clipbook */,
+				89F5F3F72CAA00D50006CFC0 /* clipbookTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -107,9 +155,6 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				89F5F3AD2CA9FD1E0006CFC0 /* clipbook */,
-			);
 			name = clipbook;
 			packageProductDependencies = (
 			);
@@ -129,9 +174,6 @@
 			);
 			dependencies = (
 				89F5F3BD2CA9FD1F0006CFC0 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				89F5F3BE2CA9FD1F0006CFC0 /* clipbookTests */,
 			);
 			name = clipbookTests;
 			packageProductDependencies = (
@@ -155,6 +197,8 @@
 			);
 			fileSystemSynchronizedGroups = (
 				89F5F3C82CA9FD1F0006CFC0 /* clipbookUITests */,
+				89F5F3EA2CAA00210006CFC0 /* clipbook */,
+				89F5F3F72CAA00D50006CFC0 /* clipbookTests */,
 			);
 			name = clipbookUITests;
 			packageProductDependencies = (
@@ -396,13 +440,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"clipbook/Preview Content\"";
+				DEVELOPMENT_TEAM = HG476GP7H7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -424,13 +471,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"clipbook/Preview Content\"";
+				DEVELOPMENT_TEAM = HG476GP7H7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

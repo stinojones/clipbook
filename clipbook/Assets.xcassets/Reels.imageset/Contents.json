@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "video-camera-icon-2048x1536-s5guccor.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "video-camera-icon-2048x1536-s5guccor 1.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "video-camera-icon-2048x1536-s5guccor 2.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
