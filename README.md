@@ -1,5 +1,5 @@
 # **clipbook**  
-A mobile app to capture the entirety of your day in 10 seconds  a video journal     tbd
+"A mobile app that distills each day into a 10-second video, creating a seamless daily journal."
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg) ![Status](https://img.shields.io/badge/status-Active-green.svg) ![Language](https://img.shields.io/github/languages/top/username/repository.svg)
 
@@ -17,8 +17,7 @@ A mobile app to capture the entirety of your day in 10 seconds  a video journal 
 
 ## **Overview**
 ### **What is this project?**  
-Provide a brief description, the problem it solves, and why you built it. Include the goals or context of the project.  
-(e.g., "This is a video journal app designed to help users document their lives through short daily clips stored locally.")
+This iOS app lets you capture multiple moments throughout the day, seamlessly merging them into a 10-second video journal entry. It encourages users to document their lives meaningfully without getting lost in filming everything. It addresses the tendency to record entire events, like a Disneyland ride, instead of fully living in the moment. I built this app because I love journaling and capturing daily moments. I wanted to create something that combines these passions while promoting a balanced, present-focused approach to documenting life.
 
 ### **Demo**  
 If applicable, embed or link a live demo, screenshots, or video walkthroughs.
