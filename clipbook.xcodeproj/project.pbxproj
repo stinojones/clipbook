@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8910FE992CE308D80046CA26 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8910FE982CE308C70046CA26 /* libsqlite3.tbd */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		89F5F3BC2CA9FD1F0006CFC0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8910FE982CE308C70046CA26 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		89F5F3AB2CA9FD1E0006CFC0 /* clipbook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clipbook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F5F3BB2CA9FD1F0006CFC0 /* clipbookTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clipbookTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F5F3C52CA9FD1F0006CFC0 /* clipbookUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clipbookUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -36,6 +41,7 @@
 				Assets.xcassets,
 				clipbookApp.swift,
 				ContentView.swift,
+				DatabaseManager.swift,
 				"Preview Content/Preview Assets.xcassets",
 				View/CameraView.swift,
 				View/Home.swift,
@@ -49,6 +55,7 @@
 				Assets.xcassets,
 				clipbookApp.swift,
 				ContentView.swift,
+				DatabaseManager.swift,
 				"Preview Content/Preview Assets.xcassets",
 			);
 			target = 89F5F3C42CA9FD1F0006CFC0 /* clipbookUITests */;
@@ -100,6 +107,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8910FE992CE308D80046CA26 /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,6 +128,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		89945A9A2CDC505800AF1BE4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8910FE982CE308C70046CA26 /* libsqlite3.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		89F5F3A22CA9FD1E0006CFC0 = {
 			isa = PBXGroup;
 			children = (
@@ -127,6 +143,7 @@
 				89F5F3AC2CA9FD1E0006CFC0 /* Products */,
 				89F5F3EA2CAA00210006CFC0 /* clipbook */,
 				89F5F3F72CAA00D50006CFC0 /* clipbookTests */,
+				89945A9A2CDC505800AF1BE4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -239,6 +256,8 @@
 			);
 			mainGroup = 89F5F3A22CA9FD1E0006CFC0;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 89F5F3AC2CA9FD1E0006CFC0 /* Products */;
 			projectDirPath = "";

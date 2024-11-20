@@ -4,12 +4,12 @@
 //
 //  Created by Stino Jones on 9/29/24.
 //
-
 import SwiftUI
 import AVKit
-
 struct Home: View {
     @StateObject var cameraModel = CameraViewModel()
+    @StateObject private var databaseManager = DatabaseManager()
+    @State private var loadedClips: [(fileURL: String, timestamp: String)] = []
     var body: some View {
         ZStack(alignment: .bottom) {
             // MARK: Camera View
@@ -21,12 +21,15 @@ struct Home: View {
             
             // MARK: Controls
             ZStack{
-
                 Button {
-                    if cameraModel.isRecording{
+                    if cameraModel.isRecording {
                         cameraModel.stopRecording()
-                    }
-                    else{
+                        
+                        // Save the clip to the database
+                        if let fileURL = cameraModel.previewURL {
+                            databaseManager.insertClip(fileURL: fileURL.absoluteString)
+                        }
+                    } else {
                         cameraModel.startRecording()
                     }
                     
@@ -95,16 +98,34 @@ struct Home: View {
             Button {
                 cameraModel.recordedDuration = 0
                 cameraModel.previewURL = nil
+                
+                // Remove files from the file system for each URL in recordedURLs
+                for url in cameraModel.recordedURLs {
+                    if FileManager.default.fileExists(atPath: url.path) {
+                        do {
+                            try FileManager.default.removeItem(at: url)
+                            print("Deleted file at \(url)")
+                        } catch {
+                            print("Failed to delete file at \(url): \(error)")
+                        }
+                    }
+                }
+                
+                // Clear the recordedURLs list after deleting the files
                 cameraModel.recordedURLs.removeAll()
             } label: {
                 Image(systemName: "xmark")
                     .font(.title)
                     .foregroundColor(.white)
             }
+
             .frame(maxWidth: .infinity,maxHeight: .infinity,alignment: .topLeading)
             .padding()
             .padding(.top)
         }
+        .onAppear {
+                    databaseManager.fetchClips()
+                }
         .overlay(content: {
             if let url = cameraModel.previewURL,cameraModel.showPreview{
                 FinalPreview(url: url, showPreview: $cameraModel.showPreview)
@@ -115,14 +136,11 @@ struct Home: View {
         .preferredColorScheme(.dark)
     }
 }
-
 struct Home_Previews: PreviewProvider {
     static var previews: some View {
         Home()
     }
 }
-
-
 //MARK: Final Video Preview
 struct FinalPreview: View{
     var url: URL
@@ -159,4 +177,3 @@ struct FinalPreview: View{
     }
     
 }
-

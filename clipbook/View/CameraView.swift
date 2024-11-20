@@ -1,9 +1,5 @@
 import SwiftUI
 import AVFoundation
-
-
-
-
 struct CameraView: View {
     @EnvironmentObject var cameraModel: CameraViewModel
     var body: some View{
@@ -46,12 +42,7 @@ struct CameraView: View {
         
     }
 }
-
-
 // Camera Model...
-
-
-
 struct CameraPreview: UIViewRepresentable {
     
     @EnvironmentObject var cameraModel : CameraViewModel
