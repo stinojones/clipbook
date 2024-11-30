@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8910FE992CE308D80046CA26 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8910FE982CE308C70046CA26 /* libsqlite3.tbd */; };
+		8939B2832CEDAB9800DB56E3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 8939B2822CEDAB9800DB56E3 /* FirebaseCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,7 +28,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		8910FE982CE308C70046CA26 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		89F5F3AB2CA9FD1E0006CFC0 /* clipbook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clipbook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F5F3BB2CA9FD1F0006CFC0 /* clipbookTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clipbookTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F5F3C52CA9FD1F0006CFC0 /* clipbookUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clipbookUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -38,11 +37,11 @@
 		89F5F3EF2CAA00210006CFC0 /* Exceptions for "clipbook" folder in "clipbook" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Assets.xcassets,
-				clipbookApp.swift,
-				ContentView.swift,
-				DatabaseManager.swift,
-				"Preview Content/Preview Assets.xcassets",
+				App/clipbookApp.swift,
+				App/ContentView.swift,
+				Model/VideoManager.swift,
+				"Service/GoogleService-Info.plist",
+				View/Assets.xcassets,
 				View/CameraView.swift,
 				View/Home.swift,
 				ViewModel/CameraViewModel.swift,
@@ -52,36 +51,17 @@
 		89F5F3F02CAA00210006CFC0 /* Exceptions for "clipbook" folder in "clipbookUITests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Assets.xcassets,
-				clipbookApp.swift,
-				ContentView.swift,
-				DatabaseManager.swift,
-				"Preview Content/Preview Assets.xcassets",
-			);
-			target = 89F5F3C42CA9FD1F0006CFC0 /* clipbookUITests */;
-		};
-		89F5F3F92CAA00D50006CFC0 /* Exceptions for "clipbookTests" folder in "clipbookTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				clipbookTests.swift,
-			);
-			target = 89F5F3BA2CA9FD1F0006CFC0 /* clipbookTests */;
-		};
-		89F5F3FA2CAA00D50006CFC0 /* Exceptions for "clipbookTests" folder in "clipbookUITests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				clipbookTests.swift,
+				App/clipbookApp.swift,
+				App/ContentView.swift,
+				Model/VideoManager.swift,
+				"Service/GoogleService-Info.plist",
+				View/Assets.xcassets,
 			);
 			target = 89F5F3C42CA9FD1F0006CFC0 /* clipbookUITests */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		89F5F3C82CA9FD1F0006CFC0 /* clipbookUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = clipbookUITests;
-			sourceTree = "<group>";
-		};
 		89F5F3EA2CAA00210006CFC0 /* clipbook */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -91,15 +71,6 @@
 			path = clipbook;
 			sourceTree = "<group>";
 		};
-		89F5F3F72CAA00D50006CFC0 /* clipbookTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				89F5F3F92CAA00D50006CFC0 /* Exceptions for "clipbookTests" folder in "clipbookTests" target */,
-				89F5F3FA2CAA00D50006CFC0 /* Exceptions for "clipbookTests" folder in "clipbookUITests" target */,
-			);
-			path = clipbookTests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,7 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8910FE992CE308D80046CA26 /* libsqlite3.tbd in Frameworks */,
+				8939B2832CEDAB9800DB56E3 /* FirebaseCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,22 +99,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		89945A9A2CDC505800AF1BE4 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				8910FE982CE308C70046CA26 /* libsqlite3.tbd */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		89F5F3A22CA9FD1E0006CFC0 = {
 			isa = PBXGroup;
 			children = (
-				89F5F3C82CA9FD1F0006CFC0 /* clipbookUITests */,
 				89F5F3AC2CA9FD1E0006CFC0 /* Products */,
 				89F5F3EA2CAA00210006CFC0 /* clipbook */,
-				89F5F3F72CAA00D50006CFC0 /* clipbookTests */,
-				89945A9A2CDC505800AF1BE4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -174,6 +134,7 @@
 			);
 			name = clipbook;
 			packageProductDependencies = (
+				8939B2822CEDAB9800DB56E3 /* FirebaseCore */,
 			);
 			productName = clipbook;
 			productReference = 89F5F3AB2CA9FD1E0006CFC0 /* clipbook.app */;
@@ -213,9 +174,7 @@
 				89F5F3C72CA9FD1F0006CFC0 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				89F5F3C82CA9FD1F0006CFC0 /* clipbookUITests */,
 				89F5F3EA2CAA00210006CFC0 /* clipbook */,
-				89F5F3F72CAA00D50006CFC0 /* clipbookTests */,
 			);
 			name = clipbookUITests;
 			packageProductDependencies = (
@@ -257,6 +216,7 @@
 			mainGroup = 89F5F3A22CA9FD1E0006CFC0;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				89A96BEA2CEDA772009930E6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 89F5F3AC2CA9FD1E0006CFC0 /* Products */;
@@ -621,6 +581,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		89A96BEA2CEDA772009930E6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8939B2822CEDAB9800DB56E3 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 89A96BEA2CEDA772009930E6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 89F5F3A32CA9FD1E0006CFC0 /* Project object */;
 }

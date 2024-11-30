@@ -1,38 +1,42 @@
-//
-//  Home.swift
-//  clipbook
-//
-//  Created by Stino Jones on 9/29/24.
-//
 import SwiftUI
 import AVKit
+
 struct Home: View {
     @StateObject var cameraModel = CameraViewModel()
-    @StateObject private var databaseManager = DatabaseManager()
-    @State private var loadedClips: [(fileURL: String, timestamp: String)] = []
+    
+    // Instantiate VideoManager
+    @StateObject var videoManager = VideoManager()
+
+    
     var body: some View {
         ZStack(alignment: .bottom) {
-            // MARK: Camera View
+            // MARK: ---------------------------------------Camera View----------------------------------------------
             CameraView()
                 .environmentObject(cameraModel)
                 .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
-                .padding(.top,10)
-                .padding(.bottom,30)
+                .padding(.top, 10)
+                .padding(.bottom, 30)
             
-            // MARK: Controls
-            ZStack{
+            // MARK: ----------------------------------------Controls---------------------------------------------
+            ZStack {
+                
+                // MARK: - Recording Button
                 Button {
+                    
+                    // if recording already, stop it
                     if cameraModel.isRecording {
-                        cameraModel.stopRecording()
                         
-                        // Save the clip to the database
-                        if let fileURL = cameraModel.previewURL {
-                            databaseManager.insertClip(fileURL: fileURL.absoluteString)
-                        }
+                        
+                        // stop recording
+                        cameraModel.stopRecording()
+                        videoManager.updateHasClips()
+                        
+                        print("Has Clips after stopping recording: \(videoManager.hasClips)")
+                        
+                    // if not recording, start recording
                     } else {
                         cameraModel.startRecording()
                     }
-                    
                 } label: {
                     Image("Reels")
                         .resizable()
@@ -42,33 +46,48 @@ struct Home: View {
                         .opacity(cameraModel.isRecording ? 0 : 1)
                         .padding(12)
                         .frame(width: 60, height: 60)
-                        .background{
+                        .background {
                             Circle()
                                 .stroke(cameraModel.isRecording ? .clear : .black)
                         }
                         .padding(6)
-                        .background{
+                        .background {
                             Circle()
                                 .fill(cameraModel.isRecording ? .red : .white)
-                            
                         }
                 }
                 
-                
-                // Preview Button
+                //MARK: -----------------------------------Preview Button-------------------------------------------
                 Button {
-                    if let _ = cameraModel.previewURL{
-                        cameraModel.showPreview.toggle()
-                    }
-                    
-                } label: {
-                    Group{
-                        if cameraModel.previewURL == nil && !cameraModel.recordedURLs.isEmpty{
-                            //Merging Videos
-                            ProgressView()
-                                .tint(.black)
+                    print("Preview Button Pressed")
+                    print("hasClips: \(videoManager.hasClips)")
+                    print("previewURL: \(String(describing: videoManager.previewURL))")
+                    print("isRecording: \(cameraModel.isRecording)")
+                    if videoManager.hasClips {
+                        if cameraModel.showPreview {
+                            
+                            // Hide the preview
+                            cameraModel.showPreview.toggle()
+                            
+                        } else {
+                            
+                            // Generate the preview if not already showing
+                            videoManager.mergeClipsForPreview { previewURL in
+                                if let previewURL = previewURL {
+                                    print("Preview URL created: \(previewURL)") 
+                                    DispatchQueue.main.async {
+                                        videoManager.previewURL = previewURL
+                                        cameraModel.showPreview.toggle()
+                                    }
+                                } else {
+                                    print("Failed to create preview URL.")
+                                }
+                            }
                         }
-                        else{
+                    }
+                } label: {
+                    Group {
+                        if videoManager.hasClips {
                             Label {
                                 Image(systemName: "chevron.right")
                                     .font(.callout)
@@ -76,6 +95,9 @@ struct Home: View {
                                 Text("Preview")
                             }
                             .foregroundColor(.black)
+                        } else {
+                            Text("No Clips")
+                                .foregroundColor(.gray)
                         }
                     }
                     .padding(.horizontal, 20)
@@ -84,96 +106,83 @@ struct Home: View {
                         Capsule()
                             .fill(.white)
                     }
-                    
-                    
                 }
-                .frame(maxWidth: .infinity,alignment: .trailing)
+                .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.trailing)
-                .opacity((cameraModel.previewURL == nil && cameraModel.recordedURLs.isEmpty) || cameraModel.isRecording ? 0 : 1)
+                .opacity((!videoManager.hasClips) || cameraModel.isRecording ? 0 : 1)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding(.trailing)
             }
-            .frame(maxHeight: .infinity,alignment: .bottom)
-            .padding(.bottom,10)
-            .padding(.bottom,30)
+            .frame(maxHeight: .infinity, alignment: .bottom)
+            .padding(.bottom, 10)
+            .padding(.bottom, 30)
             
+            // Delete Button (Clear Files)
             Button {
-                cameraModel.recordedDuration = 0
-                cameraModel.previewURL = nil
+                videoManager.clearRecordedFiles()
+                videoManager.updateHasClips()
                 
-                // Remove files from the file system for each URL in recordedURLs
-                for url in cameraModel.recordedURLs {
-                    if FileManager.default.fileExists(atPath: url.path) {
-                        do {
-                            try FileManager.default.removeItem(at: url)
-                            print("Deleted file at \(url)")
-                        } catch {
-                            print("Failed to delete file at \(url): \(error)")
-                        }
-                    }
-                }
-                
-                // Clear the recordedURLs list after deleting the files
-                cameraModel.recordedURLs.removeAll()
             } label: {
                 Image(systemName: "xmark")
                     .font(.title)
                     .foregroundColor(.white)
             }
-
-            .frame(maxWidth: .infinity,maxHeight: .infinity,alignment: .topLeading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding()
             .padding(.top)
         }
-        .onAppear {
-                    databaseManager.fetchClips()
-                }
-        .overlay(content: {
-            if let url = cameraModel.previewURL,cameraModel.showPreview{
-                FinalPreview(url: url, showPreview: $cameraModel.showPreview)
+
+        .overlay {
+            if let _ = videoManager.previewURL, cameraModel.showPreview {
+                
+                // saying what all bindings need to happen in previewURL
+                FinalPreview(cameraModel: cameraModel, videoManager: videoManager)
                     .transition(.move(edge: .trailing))
             }
-        })
+        }
         .animation(.easeInOut, value: cameraModel.showPreview)
         .preferredColorScheme(.dark)
     }
-}
-struct Home_Previews: PreviewProvider {
-    static var previews: some View {
-        Home()
-    }
-}
-//MARK: Final Video Preview
-struct FinalPreview: View{
-    var url: URL
-    @Binding var showPreview: Bool
+
     
-    var body: some View{
-        GeometryReader{proxy in
-            let size = proxy.size
-            
-            VideoPlayer(player: AVPlayer(url: url))
-                .aspectRatio(contentMode: .fill)
-                .frame(width: size.width, height: size.height)
-                .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
-            //MARK: Back Button
-                .overlay(alignment: .topLeading){
-                    Button {
-                        showPreview.toggle()
-                    } label: {
-                        Label {
-                            Text("Back")
-                        } icon: {
-                            Image(systemName: "chevron.left")
+    
+    struct FinalPreview: View {
+        
+        // Observing the model to access previewURL
+        @ObservedObject var cameraModel: CameraViewModel
+        
+        // passing videomanager as a paramater
+        var videoManager: VideoManager
+        
+        var body: some View {
+            GeometryReader { proxy in
+                let size = proxy.size
+                if let previewURL = videoManager.previewURL {
+                    VideoPlayer(player: AVPlayer(url: previewURL))
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: size.width, height: size.height)
+                        .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+                        .overlay(alignment: .topLeading) {
+                            Button {
+                                
+                                // Use cameraModel.showPreview
+                                cameraModel.showPreview.toggle()
+                                
+                            } label: {
+                                Label {
+                                    Text("Back")
+                                } icon: {
+                                    Image(systemName: "chevron.left")
+                                }
+                                .foregroundColor(.white)
+                            }
                         }
+                } else {
+                    Text("Loading preview...")
                         .foregroundColor(.white)
-                    }
-                    .foregroundColor(.white)
                 }
-            
-//            MARK: don't know why this is here for the view but i like it better in the middle centered...yuh
-//                .padding(.leading)
-//                .padding(.top,22)
-            
+            }
         }
     }
-    
 }
+

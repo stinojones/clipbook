@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyD8ZOCjBnye1o5ZkIbl16M14VzKyQzPyRQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1020032488152</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>stino.clipbook</string>
+	<key>PROJECT_ID</key>
+	<string>clipbook-4f0be</string>
+	<key>STORAGE_BUCKET</key>
+	<string>clipbook-4f0be.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1020032488152:ios:2f0aee8c1ee63944c1bdad</string>
+</dict>
+</plist>
