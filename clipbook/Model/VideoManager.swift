@@ -3,15 +3,12 @@ import AVFoundation
 
 class VideoManager: ObservableObject {
     
-    // stores url that is available for preview
     @Published var previewURL: URL?
     
     @Published var hasClips: Bool = false
     
-    // directory use now
     private let clipsDirectory: URL
     
-    //MARK: - setting up clipDirectory to ClipbookClips subfolder
     init() {
         
         // setups up clipsDirectory and a subfolder of ClipbookClips
@@ -20,10 +17,12 @@ class VideoManager: ObservableObject {
         
         // creates directory if it doesn't exist
         createClipsDirectory()
-//        updateHasClips()
+        // needed for reboot to see preview button with clips in
+        updateHasClips()
     }
+
     
-    //MARK: - Create the Clips Directory if It Doesn't Exist and initialized in innit
+    // Create the Clips Directory if It Doesn't Exist and initialized in innit
     private func createClipsDirectory() {
         if !FileManager.default.fileExists(atPath: clipsDirectory.path) {
             do {
@@ -33,34 +32,42 @@ class VideoManager: ObservableObject {
                 print("Failed to create clips directory: \(error.localizedDescription)")
             }
         }
-        updateHasClips()
     }
     
-    // MARK: Save a Video to the Clips Directory in Date Form
+    
+    // Save a Video to the Clips Directory in Date Form
     func saveVideo(tempURL: URL, completion: @escaping (Bool, URL?) -> Void) {
         // Generate a timestamp string for the file name
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss-SSS" // Precise date format
+        dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss-SSS"
         let timestamp = dateFormatter.string(from: Date())
-        
+
         // Clip renamed with the timestamp and .mov extension for directory
         let clipName = "clip_\(timestamp).mov"
-        
+
         // Clip destination
         let destinationURL = clipsDirectory.appendingPathComponent(clipName)
-        
+
         // Moves clip with clipname to clipsDirectory
         DispatchQueue.global(qos: .background).async {
             do {
                 try FileManager.default.moveItem(at: tempURL, to: destinationURL)
-                
+
                 // Ensure updates are performed on the main thread
                 DispatchQueue.main.async {
-                    self.updateHasClips()   // Update the 'hasClips' state
-                    self.updatePreviewURL() // Update preview URL
+                    // Update the clips and then fetch them
+                    self.updateHasClips()   // Update the 'hasClips' state first
                     
-                    // Notify the caller of success with the saved URL
-                    completion(true, destinationURL)
+                    // Add a small delay to ensure the state has been updated
+                    DispatchQueue.main.asyncAfter(deadline: .now()) {
+                        // Fetch all clips after hasClips is updated
+                        let clips = self.getAllClips()
+                        print("Fetched clips after saving: \(clips?.count ?? 0)")
+                        print("has clips after save: \(self.hasClips)")
+
+                        // Notify the caller of success with the saved URL
+                        completion(true, destinationURL)
+                    }
                 }
             } catch {
                 DispatchQueue.main.async {
@@ -71,46 +78,67 @@ class VideoManager: ObservableObject {
             }
         }
     }
-    // MARK: Fetch All Clips from Directory and Merge Them
+    
+    
+    // Fetch All Clips from Directory and Merge Them
     func mergeClipsForPreview(completion: @escaping (_ previewURL: URL?) -> ()) {
+        // Check if clips are available
+        guard hasClips else {
+            print("No clips available to merge.")
+            DispatchQueue.main.async {
+                completion(nil)
+            }
+            return
+        }
+        
         // Fetch all video clips from the directory
         guard let clips = getAllClips(), !clips.isEmpty else {
             print("No clips available to merge.")
-            completion(nil)
+            DispatchQueue.main.async {
+                completion(nil)
+            }
             return
         }
-        
+
         // If there is only one clip, return it directly
         if clips.count == 1 {
+            hasClips = true
             print("Only one clip available, returning it as preview.")
-            completion(clips.first)  // Return the URL of the single clip
+            DispatchQueue.main.async {
+                completion(clips.first)
+            }
             return
         }
-        
+
         // Convert the URLs to AVURLAsset objects
         let assets = clips.compactMap { AVURLAsset(url: $0) }
-        
+
         // Call the mergeVideo function to merge the assets into one
         mergeVideo(assets: assets) { exporter in
             exporter.exportAsynchronously {
                 if exporter.status == .failed {
                     print(exporter.error?.localizedDescription ?? "Export failed")
-                    completion(nil)  // Return nil if the export fails
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
                 } else {
                     if let finalURL = exporter.outputURL {
                         print("Merged video created at: \(finalURL)")
                         DispatchQueue.main.async {
-                            // Pass the final merged video URL to the completion handler
                             completion(finalURL)
                         }
                     } else {
-                        completion(nil)  // Return nil if no URL is found
+                        DispatchQueue.main.async {
+                            completion(nil)
+                        }
                     }
                 }
             }
         }
     }
-    // MARK: Merge Videos
+    
+    
+    // Merge Videos
     func mergeVideo(assets: [AVURLAsset], completion: @escaping (_ exporter: AVAssetExportSession) -> ()) {
         let composition = AVMutableComposition()
         var lastTime: CMTime = .zero
@@ -150,14 +178,14 @@ class VideoManager: ObservableObject {
         videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
         
         // MARK: - Temp Output URL
-        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("mergedVideo_\(Date().timeIntervalSince1970).mp4")
+        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("mergedVideo_\(Date().timeIntervalSince1970).mov")
         
         
         
         
         // Set up the export session
         guard let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else { return }
-        exporter.outputFileType = .mp4
+        exporter.outputFileType = .mov
         exporter.outputURL = tempURL
         exporter.videoComposition = videoComposition
         
@@ -165,35 +193,24 @@ class VideoManager: ObservableObject {
         completion(exporter)
     }
     
-    // MARK: Get All Clips (Fetch Videos Dynamically from Directory)
+    
+    // Get All Clips (Fetch Videos Dynamically from Directory)
     func getAllClips() -> [URL]? {
         do {
-            // Get all files in the clips directory
             let fileURLs = try FileManager.default.contentsOfDirectory(at: clipsDirectory, includingPropertiesForKeys: [.creationDateKey])
-            
-            // Filter out non-video files
             let videoFiles = fileURLs.filter { $0.pathExtension.lowercased() == "mov" }
-            
-            // Sort the files by filename (date-based naming) or fallback to creation date
             let sortedFiles = videoFiles.sorted {
-                // Try to sort by filenames
                 if $0.lastPathComponent < $1.lastPathComponent {
                     return true
                 } else if $0.lastPathComponent > $1.lastPathComponent {
                     return false
                 }
-                
-                // If filenames are the same or inconsistent, sort by creation date
                 let attributes1 = try? FileManager.default.attributesOfItem(atPath: $0.path)
                 let attributes2 = try? FileManager.default.attributesOfItem(atPath: $1.path)
                 let date1 = attributes1?[.creationDate] as? Date ?? Date.distantPast
                 let date2 = attributes2?[.creationDate] as? Date ?? Date.distantPast
-                
                 return date1 < date2
             }
-            
-            // Log the sorted order (optional)
-            print("Sorted Clips: \(sortedFiles.map { $0.lastPathComponent })")
             
             return sortedFiles
         } catch {
@@ -201,16 +218,28 @@ class VideoManager: ObservableObject {
             return nil
         }
     }
-    // MARK: Clear All Recorded Files
+    
+    
+    // Clear All Recorded Files
     func clearRecordedFiles() {
         DispatchQueue.global(qos: .background).async {
             do {
                 let fileURLs = try FileManager.default.contentsOfDirectory(at: self.clipsDirectory, includingPropertiesForKeys: nil)
+                if fileURLs.isEmpty {
+                    DispatchQueue.main.async {
+                        print("No files to clear.")
+                        self.updateHasClips()
+                    }
+                    return
+                }
+                
                 for url in fileURLs {
                     try FileManager.default.removeItem(at: url)
                 }
+                
                 DispatchQueue.main.async {
                     print("Cleared all recorded files.")
+                    self.updateHasClips()
                 }
             } catch {
                 print("Failed to clear files: \(error.localizedDescription)")
@@ -218,16 +247,22 @@ class VideoManager: ObservableObject {
         }
     }
     
-    // MARK: Get the Clips Directory URL
+    
+    // Get the Clips Directory URL
     func getClipsDirectoryURL() -> URL {
         return clipsDirectory
     }
     
-    // MARK: - See if clips inside of directory for preview button to work
+    
+    // See if clips inside of directory for preview button to work
     func hasClipsInDirectory() -> Bool {
         let fileManager = FileManager.default
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: clipsDirectory.path)
+            
+            // needed to check directory and preview button to work
+            updateHasClips()
+            
             return !contents.isEmpty
         } catch {
             print("Error reading directory contents: \(error.localizedDescription)")
@@ -235,19 +270,18 @@ class VideoManager: ObservableObject {
         }
     }
     
-    
-    
     func updateHasClips() {
         DispatchQueue.global(qos: .background).async {
             do {
                 let fileURLs = try FileManager.default.contentsOfDirectory(at: self.clipsDirectory, includingPropertiesForKeys: nil)
                 
-                // Filter for only .mov files, if necessary
-                let clipFiles = fileURLs.filter { $0.pathExtension == "mov" }
+                // Filter for only .mov files, you could extend this to support other formats
+                let clipFiles = fileURLs.filter { $0.pathExtension.lowercased() == "mov" }
                 
                 DispatchQueue.main.async {
                     // Update hasClips only if there are .mov clips
                     self.hasClips = !clipFiles.isEmpty
+
                 }
             } catch {
                 // Log the error but continue
@@ -259,25 +293,4 @@ class VideoManager: ObservableObject {
             }
         }
     }
-    // Function to update the preview URL
-    func updatePreviewURL() {
-        if hasClips {
-            // If there's only one clip, set previewURL directly without merging
-            if let clips = getAllClips(), clips.count == 1 {
-                self.previewURL = clips.first // Directly set the preview URL to the single clip
-            } else {
-                // Call your preview generation logic here for merging clips
-                mergeClipsForPreview { previewURL in
-                    if let previewURL = previewURL {
-                        self.previewURL = previewURL
-                    }
-                }
-            }
-        } else {
-            // If no clips are available, reset the preview URL
-            self.previewURL = nil
-        }
-    }
-    
-    
 }

@@ -3,41 +3,29 @@ import AVKit
 
 struct Home: View {
     @StateObject var cameraModel = CameraViewModel()
-    
-    // Instantiate VideoManager
-    @StateObject var videoManager = VideoManager()
-
+    @ObservedObject var videoManager = VideoManager()
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            // MARK: ---------------------------------------Camera View----------------------------------------------
             CameraView()
+                // camera shape to record
                 .environmentObject(cameraModel)
                 .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
                 .padding(.top, 10)
                 .padding(.bottom, 30)
             
-            // MARK: ----------------------------------------Controls---------------------------------------------
+            // controls zstack
             ZStack {
                 
-                // MARK: - Recording Button
+                // recording button
                 Button {
-                    
-                    // if recording already, stop it
                     if cameraModel.isRecording {
-                        
-                        
-                        // stop recording
                         cameraModel.stopRecording()
-                        videoManager.updateHasClips()
-                        
-                        print("Has Clips after stopping recording: \(videoManager.hasClips)")
-                        
-                    // if not recording, start recording
                     } else {
                         cameraModel.startRecording()
                     }
                 } label: {
+                    // recording for red button, not recording for normal look
                     Image("Reels")
                         .resizable()
                         .renderingMode(.template)
@@ -57,24 +45,17 @@ struct Home: View {
                         }
                 }
                 
-                //MARK: -----------------------------------Preview Button-------------------------------------------
+                // Preview Button
                 Button {
-                    print("Preview Button Pressed")
-                    print("hasClips: \(videoManager.hasClips)")
-                    print("previewURL: \(String(describing: videoManager.previewURL))")
-                    print("isRecording: \(cameraModel.isRecording)")
-                    if videoManager.hasClips {
+                    if videoManager.hasClipsInDirectory() { // Check if there are clips in the directory
                         if cameraModel.showPreview {
-                            
                             // Hide the preview
                             cameraModel.showPreview.toggle()
-                            
                         } else {
-                            
                             // Generate the preview if not already showing
                             videoManager.mergeClipsForPreview { previewURL in
                                 if let previewURL = previewURL {
-                                    print("Preview URL created: \(previewURL)") 
+                                    print("Preview URL created: \(previewURL)")
                                     DispatchQueue.main.async {
                                         videoManager.previewURL = previewURL
                                         cameraModel.showPreview.toggle()
@@ -87,7 +68,7 @@ struct Home: View {
                     }
                 } label: {
                     Group {
-                        if videoManager.hasClips {
+                        if videoManager.hasClipsInDirectory() { // Check if there are clips in the directory
                             Label {
                                 Image(systemName: "chevron.right")
                                     .font(.callout)
@@ -109,7 +90,7 @@ struct Home: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.trailing)
-                .opacity((!videoManager.hasClips) || cameraModel.isRecording ? 0 : 1)
+                .opacity(cameraModel.isRecording || !videoManager.hasClipsInDirectory() ? 0 : 1) // Use hasClipsInDirectory to set opacity
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.trailing)
             }
@@ -120,7 +101,6 @@ struct Home: View {
             // Delete Button (Clear Files)
             Button {
                 videoManager.clearRecordedFiles()
-                videoManager.updateHasClips()
                 
             } label: {
                 Image(systemName: "xmark")
@@ -184,5 +164,9 @@ struct Home: View {
             }
         }
     }
+}
+
+#Preview {
+    Home()
 }
 
