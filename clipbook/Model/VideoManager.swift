@@ -63,7 +63,6 @@ class VideoManager: ObservableObject {
                         // Fetch all clips after hasClips is updated
                         let clips = self.getAllClips()
                         print("Fetched clips after saving: \(clips?.count ?? 0)")
-                        print("has clips after save: \(self.hasClips)")
 
                         // Notify the caller of success with the saved URL
                         completion(true, destinationURL)
@@ -267,6 +266,31 @@ class VideoManager: ObservableObject {
         } catch {
             print("Error reading directory contents: \(error.localizedDescription)")
             return false
+        }
+    }
+    
+    // Undo Function: Removes the Last Clip from the Directory
+    func undoLastClip() {
+        // Fetch all clips from the directory
+        guard let clips = getAllClips(), !clips.isEmpty else {
+            print("No clips to undo.")
+            return
+        }
+        
+        // Get the last clip in the list
+        let lastClip = clips.last
+        
+        // Remove the last clip from the directory
+        do {
+            if let lastClip = lastClip {
+                try FileManager.default.removeItem(at: lastClip)
+                print("Successfully removed clip: \(lastClip.path)")
+                
+                // After removing, update the `hasClips` state
+                updateHasClips()
+            }
+        } catch {
+            print("Error removing last clip: \(error.localizedDescription)")
         }
     }
     

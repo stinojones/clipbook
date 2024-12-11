@@ -15,7 +15,42 @@ struct Home: View {
                 .padding(.bottom, 30)
             
             // controls zstack
-            ZStack {
+            HStack(alignment: .center, spacing: 10) {
+                
+                // undo button
+                Button { if cameraModel.clipCount > 0 {
+                    videoManager.undoLastClip()
+                    cameraModel.clipCount -= 1
+                    cameraModel.undoLastClip()
+                }
+                    
+                } label: {
+                    Group {
+                        if videoManager.hasClipsInDirectory() { // Check if there are clips in the directory
+                            Label {
+                                Image(systemName: "arrow.uturn.backward.circle")
+                                    .font(.callout)
+                            } icon: {
+                            }
+                            .foregroundColor(.black)
+                        } else {
+                            Image(systemName: "arrow.uturn.backward.circle")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 8)
+                    .background {
+                        Circle()
+                            .fill(.white)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading)
+                .opacity(cameraModel.isRecording || UserDefaults.standard.integer(forKey: "clipCount") <= 0 ? 0 : 1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading)
+                
                 
                 // recording button
                 Button {
@@ -56,10 +91,10 @@ struct Home: View {
                             videoManager.mergeClipsForPreview { previewURL in
                                 if let previewURL = previewURL {
                                     print("Preview URL created: \(previewURL)")
-                                    DispatchQueue.main.async {
-                                        videoManager.previewURL = previewURL
-                                        cameraModel.showPreview.toggle()
-                                    }
+                                    DispatchQueue.main.async { // 0.5 second delay
+                                                            videoManager.previewURL = previewURL
+                                                            cameraModel.showPreview.toggle()
+                                                        }
                                 } else {
                                     print("Failed to create preview URL.")
                                 }
@@ -70,37 +105,41 @@ struct Home: View {
                     Group {
                         if videoManager.hasClipsInDirectory() { // Check if there are clips in the directory
                             Label {
-                                Image(systemName: "chevron.right")
+                                Image(systemName: "play.circle")
                                     .font(.callout)
                             } icon: {
-                                Text("Preview")
                             }
                             .foregroundColor(.black)
                         } else {
-                            Text("No Clips")
+                            Image(systemName: "play.circle")
                                 .foregroundColor(.gray)
                         }
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 8)
                     .background {
-                        Capsule()
+                        Circle()
                             .fill(.white)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.trailing)
-                .opacity(cameraModel.isRecording || !videoManager.hasClipsInDirectory() ? 0 : 1) // Use hasClipsInDirectory to set opacity
+                .opacity(cameraModel.isRecording || UserDefaults.standard.integer(forKey: "clipCount") <= 0 ? 0 : 1)
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.trailing)
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
             .padding(.bottom, 10)
             .padding(.bottom, 30)
+         
+            
+            
+            
             
             // Delete Button (Clear Files)
             Button {
                 videoManager.clearRecordedFiles()
+                cameraModel.resetAllClips()
                 
             } label: {
                 Image(systemName: "xmark")
@@ -110,6 +149,7 @@ struct Home: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding()
             .padding(.top)
+            .opacity(cameraModel.isRecording || UserDefaults.standard.integer(forKey: "clipCount") <= 0 ? 0 : 1)
         }
 
         .overlay {

@@ -1,99 +1,118 @@
 import SwiftUI
-import AVFoundation // used for handling audiovisual media
+import AVFoundation
 
-// nso needed for avfoundation, avcapturefileoutputrecordingdelegate - handle events during video recording
 class CameraViewModel: NSObject, ObservableObject, AVCaptureFileOutputRecordingDelegate {
     
-    // object that manages camera input/output of current session
+    // MARK: - Camera Properties
     @Published var session = AVCaptureSession()
-    
     @Published var tempFileURL: URL?
-    
-    // bool to trigger alerts
     @Published var alert = false
-    
-    // object to handle video output
     @Published var output = AVCaptureMovieFileOutput()
-    
-    // defualt way to show live camerafeed
     @Published var preview: AVCaptureVideoPreviewLayer!
     
-    //MARK: --------------Video Recording States------------
-    
-    // tracks if camera is recording
+    // MARK: - Video Recording States
     @Published var isRecording: Bool = false
-    
-    // holds urls of recorded videos
     @Published var recordedURLs: [URL] = []
-    
-    // bool for showing preview or not
     @Published var showPreview: Bool = false
     
-    //MARK: -----------Progress Bar----------------------
-    
-    // tracks how long video has been recording
-    @Published var recordedDuration: CGFloat = 0
-    
-    // defines maximum recording duration
-    @Published var maxDuration: CGFloat = 10
+    // MARK: - Progress Bar Properties
+    @Published var recordedDuration: CGFloat = 0.00
+    @Published var maxDuration: CGFloat = 10.00 
     
     // Video manager initialized
     private let videoManager = VideoManager()
     
+    // MARK: - UserDefaults Keys and Stored Data
+    private let clipTimesKey = "clipTimes"
+    var clipTimes: [CGFloat] {
+        get {
+            return UserDefaults.standard.array(forKey: clipTimesKey) as? [CGFloat] ?? []
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: clipTimesKey)
+        }
+    }
     
+    var clipCount: Int {
+        get {
+            return UserDefaults.standard.integer(forKey: "clipCount")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "clipCount")
+        }
+    }
     
-    //MARK: methods
+    // Progress calculated dynamically
+    var progress: CGFloat {
+        let totalDuration = clipTimes.reduce(0, +) + recordedDuration
+        return min(totalDuration / maxDuration, 1.0)
+    }
     
-    // Handle Recording Output
+    // MARK: - Recording Output Handling
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         if let error = error {
             print("Error during recording: \(error.localizedDescription)")
             return
         }
-
-        // Save the video to the Clips directory using VideoManager with a completion handler
+        
+        // Save the video to the Clips directory
         videoManager.saveVideo(tempURL: outputFileURL) { success, _ in
             if success {
-                // Update hasClips after saving the video
-                self.videoManager.updateHasClips()  // Ensure the hasClips state is updated
-                
-                // At this point, hasClips and previewURL have been updated in VideoManager
-                print("Has Clips after saving: \(self.videoManager.hasClips)")
-                
-                if let previewURL = self.videoManager.previewURL {
-                    print("Preview URL updated to: \(previewURL.path)")
-                } else {
-                    print("No preview URL available.")
-                }
+                print("Has Clips in directory after saving: \(self.videoManager.hasClipsInDirectory())")
             } else {
                 print("Failed to save video.")
             }
         }
+        clipCount += 1
     }
     
-    
-    // Recording Button functions
+    // MARK: - Recording Functions
     func startRecording() {
-        // Generate a unique temp file URL
         let tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
             .appendingPathComponent("tempRecording_\(UUID().uuidString).mov")
-        
-        // Set the tempFileURL property so it can be accessed later
         self.tempFileURL = tempURL
-        
-        // Start recording to the temp file
         output.startRecording(to: tempURL, recordingDelegate: self)
         isRecording = true
     }
     
-    
     func stopRecording() {
         output.stopRecording()
         isRecording = false
+        
+        // Append the recorded duration to `clipTimes` in real-time
+        if recordedDuration > 0 {
+            clipTimes.append(recordedDuration)
+            recordedDuration = 0 // Reset for the next recording
+            
+            // Save updated `clipTimes` to UserDefaults
+            UserDefaults.standard.set(clipTimes, forKey: clipTimesKey)
+            
+            print("Clip Times: \(clipTimes)")
+        }
+    }
+    
+    // Undo the last recorded clip
+    func undoLastClip() {
+        if !clipTimes.isEmpty {
+            clipTimes.removeLast()
+            recordedDuration = 0
+            
+            
+        }
     }
     
     
-    // Camera Setup
+    
+    // Reset all recorded clips
+    func resetAllClips() {
+        clipTimes.removeAll()
+        recordedDuration = 0
+        print("Clip Times after reset: \(clipTimes)")
+        clipCount = 0
+    }
+    
+    
+    // MARK: - Camera Setup
     func checkPermission() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
@@ -111,15 +130,12 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureFileOutputRecordingD
         }
     }
     
-    
-    // Camera Setup
     func setUp() {
         do {
             self.session.beginConfiguration()
             
-            // MARK: ------------------------------decides if it's a 0.5 view--------------------------------
             guard let cameraDevice = AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back) else {
-                print("Error: No ultrawidecamera found.")
+                print("Error: No ultrawide camera found.")
                 return
             }
             
