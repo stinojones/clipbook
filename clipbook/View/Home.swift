@@ -8,30 +8,27 @@ struct Home: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             CameraView()
-                // camera shape to record
                 .environmentObject(cameraModel)
                 .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
                 .padding(.top, 10)
                 .padding(.bottom, 30)
             
-            // controls zstack
+            // Controls ZStack
             HStack(alignment: .center, spacing: 10) {
                 
-                // undo button
-                Button { if cameraModel.clipCount > 0 {
-                    videoManager.undoLastClip()
-                    cameraModel.clipCount -= 1
-                    cameraModel.undoLastClip()
-                }
-                    
+                // Undo Button
+                Button {
+                    if cameraModel.clipCount > 0 {
+                        videoManager.undoLastClip()
+                        cameraModel.undoLastClip()
+                    }
                 } label: {
                     Group {
-                        if videoManager.hasClipsInDirectory() { // Check if there are clips in the directory
+                        if videoManager.hasClipsInDirectory() {
                             Label {
                                 Image(systemName: "arrow.uturn.backward.circle")
                                     .font(.callout)
-                            } icon: {
-                            }
+                            } icon: {}
                             .foregroundColor(.black)
                         } else {
                             Image(systemName: "arrow.uturn.backward.circle")
@@ -48,11 +45,8 @@ struct Home: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.leading)
                 .opacity(cameraModel.isRecording || UserDefaults.standard.integer(forKey: "clipCount") <= 0 ? 0 : 1)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading)
                 
-                
-                // recording button
+                // Recording Button
                 Button {
                     if cameraModel.isRecording {
                         cameraModel.stopRecording()
@@ -60,7 +54,6 @@ struct Home: View {
                         cameraModel.startRecording()
                     }
                 } label: {
-                    // recording for red button, not recording for normal look
                     Image("Reels")
                         .resizable()
                         .renderingMode(.template)
@@ -82,19 +75,16 @@ struct Home: View {
                 
                 // Preview Button
                 Button {
-                    if videoManager.hasClipsInDirectory() { // Check if there are clips in the directory
+                    if videoManager.hasClipsInDirectory() {
                         if cameraModel.showPreview {
-                            // Hide the preview
                             cameraModel.showPreview.toggle()
                         } else {
-                            // Generate the preview if not already showing
                             videoManager.mergeClipsForPreview { previewURL in
                                 if let previewURL = previewURL {
-                                    print("Preview URL created: \(previewURL)")
-                                    DispatchQueue.main.async { // 0.5 second delay
-                                                            videoManager.previewURL = previewURL
-                                                            cameraModel.showPreview.toggle()
-                                                        }
+                                    DispatchQueue.main.async {
+                                        videoManager.previewURL = previewURL
+                                        cameraModel.showPreview.toggle()
+                                    }
                                 } else {
                                     print("Failed to create preview URL.")
                                 }
@@ -103,12 +93,11 @@ struct Home: View {
                     }
                 } label: {
                     Group {
-                        if videoManager.hasClipsInDirectory() { // Check if there are clips in the directory
+                        if videoManager.hasClipsInDirectory() {
                             Label {
                                 Image(systemName: "play.circle")
                                     .font(.callout)
-                            } icon: {
-                            }
+                            } icon: {}
                             .foregroundColor(.black)
                         } else {
                             Image(systemName: "play.circle")
@@ -125,82 +114,65 @@ struct Home: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.trailing)
                 .opacity(cameraModel.isRecording || UserDefaults.standard.integer(forKey: "clipCount") <= 0 ? 0 : 1)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.trailing)
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
-            .padding(.bottom, 10)
             .padding(.bottom, 30)
-         
-            
-            
-            
-            
-            // Delete Button (Clear Files)
-            Button {
-                videoManager.clearRecordedFiles()
-                cameraModel.resetAllClips()
-                
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.title)
-                    .foregroundColor(.white)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .padding()
-            .padding(.top)
-            .opacity(cameraModel.isRecording || UserDefaults.standard.integer(forKey: "clipCount") <= 0 ? 0 : 1)
         }
-
-        .overlay {
-            if let _ = videoManager.previewURL, cameraModel.showPreview {
-                
-                // saying what all bindings need to happen in previewURL
-                FinalPreview(cameraModel: cameraModel, videoManager: videoManager)
-                    .transition(.move(edge: .trailing))
-            }
-        }
-        .animation(.easeInOut, value: cameraModel.showPreview)
-        .preferredColorScheme(.dark)
-    }
-
-    
-    
-    struct FinalPreview: View {
-        
-        // Observing the model to access previewURL
-        @ObservedObject var cameraModel: CameraViewModel
-        
-        // passing videomanager as a paramater
-        var videoManager: VideoManager
-        
-        var body: some View {
-            GeometryReader { proxy in
-                let size = proxy.size
-                if let previewURL = videoManager.previewURL {
-                    VideoPlayer(player: AVPlayer(url: previewURL))
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: size.width, height: size.height)
-                        .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
-                        .overlay(alignment: .topLeading) {
-                            Button {
-                                
-                                // Use cameraModel.showPreview
-                                cameraModel.showPreview.toggle()
-                                
-                            } label: {
-                                Label {
-                                    Text("Back")
-                                } icon: {
-                                    Image(systemName: "chevron.left")
-                                }
-                                .foregroundColor(.white)
+        .sheet(isPresented: $cameraModel.showPreview) {
+            FinalPreview(cameraModel: cameraModel, videoManager: videoManager)
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            if value.translation.height < 0 {
+                                // Optionally handle upward swipes or other gestures
                             }
                         }
-                } else {
-                    Text("Loading preview...")
-                        .foregroundColor(.white)
-                }
+                        .onEnded { value in
+                            if value.translation.height > 100 { // Swipe threshold
+                                cameraModel.showPreview.toggle() // Dismiss the preview
+                            }
+                        }
+                )
+                .preferredColorScheme(.dark)
+        }
+        .animation(.easeInOut, value: cameraModel.showPreview)
+    }
+}
+
+struct FinalPreview: View {
+    @ObservedObject var cameraModel: CameraViewModel
+    var videoManager: VideoManager
+    @State private var player: AVPlayer?
+    @State private var isPlaying: Bool = true
+    
+    var body: some View {
+        GeometryReader { proxy in
+            let size = proxy.size
+            if let previewURL = videoManager.previewURL {
+                VideoPlayer(player: player)
+                    .onAppear {
+                        // Initialize player and start playback automatically
+                        if player == nil {
+                            player = AVPlayer(url: previewURL)
+                            player?.play()
+                        }
+                    }
+                    .onChange(of: isPlaying) { newValue in
+                        if newValue {
+                            player?.play()
+                        } else {
+                            player?.pause()
+                        }
+                    }
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: size.width, height: size.height)
+                    .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+                    .onDisappear {
+                        player?.pause() // Pause the video when it disappears
+                    }
+            } else {
+                Text("Loading preview...")
+                    .foregroundColor(.white)
             }
         }
     }
@@ -209,4 +181,3 @@ struct Home: View {
 #Preview {
     Home()
 }
-

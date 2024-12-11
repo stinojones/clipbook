@@ -9,6 +9,7 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureFileOutputRecordingD
     @Published var alert = false
     @Published var output = AVCaptureMovieFileOutput()
     @Published var preview: AVCaptureVideoPreviewLayer!
+    @Published var player: AVPlayer? 
     
     // MARK: - Video Recording States
     @Published var isRecording: Bool = false
@@ -86,8 +87,6 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureFileOutputRecordingD
             
             // Save updated `clipTimes` to UserDefaults
             UserDefaults.standard.set(clipTimes, forKey: clipTimesKey)
-            
-            print("Clip Times: \(clipTimes)")
         }
     }
     
@@ -96,8 +95,7 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureFileOutputRecordingD
         if !clipTimes.isEmpty {
             clipTimes.removeLast()
             recordedDuration = 0
-            
-            
+            clipCount -= 1
         }
     }
     
@@ -107,7 +105,6 @@ class CameraViewModel: NSObject, ObservableObject, AVCaptureFileOutputRecordingD
     func resetAllClips() {
         clipTimes.removeAll()
         recordedDuration = 0
-        print("Clip Times after reset: \(clipTimes)")
         clipCount = 0
     }
     

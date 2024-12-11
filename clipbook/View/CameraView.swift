@@ -33,11 +33,6 @@ struct CameraView: View {
         .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) { _ in
             if cameraModel.isRecording {
                 let totalDuration = cameraModel.clipTimes.reduce(0, +) + cameraModel.recordedDuration
-                
-                // Debug prints to check if the totalDuration aligns with expected progress
-                print("Total Duration: \(totalDuration)")
-                print("Progress: \(cameraModel.progress)")
-
                 // Ensure progress bar reflects accurate total duration
                 if totalDuration >= cameraModel.maxDuration {
                     cameraModel.stopRecording()
