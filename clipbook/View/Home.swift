@@ -4,6 +4,7 @@ import AVKit
 struct Home: View {
     @StateObject var cameraModel = CameraViewModel()
     @ObservedObject var videoManager = VideoManager()
+    @State private var isLoading: Bool = false // Tracks loading state
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -75,25 +76,26 @@ struct Home: View {
                 
                 // Preview Button
                 Button {
-                    if videoManager.hasClipsInDirectory() {
-                        if cameraModel.showPreview {
-                            cameraModel.showPreview.toggle()
-                        } else {
-                            videoManager.mergeClipsForPreview { previewURL in
+                    if videoManager.hasClipsInDirectory() && !isLoading {
+                        isLoading = true // Start loading
+                        videoManager.mergeClipsForPreview { previewURL in
+                            DispatchQueue.main.async {
                                 if let previewURL = previewURL {
-                                    DispatchQueue.main.async {
-                                        videoManager.previewURL = previewURL
-                                        cameraModel.showPreview.toggle()
-                                    }
+                                    videoManager.previewURL = previewURL
+                                    cameraModel.showPreview.toggle()
                                 } else {
                                     print("Failed to create preview URL.")
                                 }
+                                isLoading = false // End loading
                             }
                         }
                     }
                 } label: {
                     Group {
-                        if videoManager.hasClipsInDirectory() {
+                        if isLoading {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .black)) // Black tinted loading indicator
+                        } else if videoManager.hasClipsInDirectory() {
                             Label {
                                 Image(systemName: "play.circle")
                                     .font(.callout)
@@ -114,6 +116,7 @@ struct Home: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.trailing)
                 .opacity(cameraModel.isRecording || UserDefaults.standard.integer(forKey: "clipCount") <= 0 ? 0 : 1)
+                .disabled(isLoading) // Disable while loading
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
             .padding(.bottom, 30)
