@@ -1,5 +1,3 @@
-Here’s your revised README.md with improved formatting, headings, separators, and organization to make it look cleaner and more structured on GitHub:
-
 # Clipbook
 
 > “Capture and cherish life’s meaningful moments, one 10-second clip at a time.”
