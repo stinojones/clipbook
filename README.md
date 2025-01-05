@@ -1,66 +1,63 @@
-# Clipbook
-
+# **Clipbook**  
 > “Capture and cherish life’s meaningful moments, one 10-second clip at a time.”
+
+![License](https://img.shields.io/badge/license-MIT-blue.svg) ![Status](https://img.shields.io/badge/status-Active-green.svg) ![Language](https://img.shields.io/github/languages/top/stinojones/clipbook.svg)
 
 ---
 
-## Table of Contents
-1. [Overview](#overview)
-2. [Features](#features)
-3. [Installation](#installation)
-4. [Usage](#usage)
-5. [Technologies Used](#technologies-used)
-6. [Contributing](#contributing)
-7. [License](#license)
+## **Table of Contents**  
+1. [Overview](#overview)  
+2. [Features](#features)  
+3. [Installation](#installation)  
+4. [Usage](#usage)  
+5. [Technologies Used](#technologies-used)  
+6. [Contributing](#contributing)  
+7. [License](#license)  
 8. [Contact](#contact)
 
 ---
 
-## Overview
+## **Overview**  
 
-### What is Clipbook?
-
-Clipbook is a lightweight iOS app designed to distill your day into a 10-second video journal. By offering features such as pause/resume recording and clip merging, it empowers users to document their lives meaningfully without the overwhelm of over-recording.
+### **What is Clipbook?**  
+Clipbook is a lightweight iOS app designed to distill your day into a 10-second video journal. It offers features such as pause/resume recording and clip merging, empowering users to document their lives meaningfully without the overwhelm of over-recording.
 
 This app encourages mindfulness by helping users focus on living in the moment while capturing highlights. The project reflects a passion for journaling and thoughtful storytelling.
 
-### Why Clipbook?
-
-Many users film entire events like vacations or theme park rides, losing the essence of the experience. Clipbook solves this by limiting recordings to short, impactful clips, ideal for journaling and reflecting on meaningful memories.
+### **Why Clipbook?**  
+Many users film entire events, such as vacations or theme park rides, which can lead to missing out on the essence of the experience. Clipbook solves this by limiting recordings to short, impactful clips, perfect for journaling and reflecting on meaningful memories.
 
 ---
 
-### Prototype Shown  
+### **Prototype Shown**  
 [Watch on YouTube](https://youtube.com/shorts/qcgE_hnMP8s)
 
-### Functionalities Shown  
+### **Functionalities Shown**  
 [Watch on YouTube](https://youtube.com/shorts/1kagFJuxOE4)
 
 ---
 
-## Features
+## **Features**  
 
 - **Pause and Resume Recording**: Take breaks mid-shot and resume seamlessly.
 - **10-Second Clip Limit**: Encourages brevity and thoughtful capture.
-- **Merge Multiple Clips**: Combine multiple moments into a cohesive daily journal.
-- **Visual Timer Progress Bar**: See remaining recording time in real-time.
+- **Merge Multiple Clips**: Combine several moments into a cohesive daily journal.
+- **Visual Timer Progress Bar**: See the remaining recording time in real-time.
 - **FileManager-Based Storage**: Saves recordings locally for simplicity and privacy.
 - **Preview and Save**: Review your clips before finalizing and saving.
 
 ---
 
-## Installation
+## **Installation**  
 
-### Prerequisites
-
+### **Prerequisites**  
 - macOS with Xcode 14.0+ installed.
 - An iOS device running iOS 15 or later (or simulator).
 
-### Steps
-
-1. **Clone the repository:**
+### **Steps**  
+1. **Clone the repository**:  
    ```bash
-   git clone https://github.com/username/clipbook.git
+   git clone https://github.com/stinojones/clipbook.git
 
 	2.	Open the project in Xcode:
 
@@ -83,8 +80,6 @@ How to Use Clipbook
 Example Workflow
 	•	Capture highlights of your day, such as a sunset, a coffee break, or a quick family gathering.
 	•	Review your clips, merge them, and save a daily video journal entry.
-
-Screenshots of the interface and workflows would go here for visual reference.
 
 Technologies Used
 	•	Language: Swift
