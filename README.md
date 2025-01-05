@@ -1,64 +1,68 @@
-Here’s a polished and enhanced README file for your Clipbook app, tailored to showcase its unique features and professionalize its appearance for GitHub and your portfolio. Let me know if you’d like to tweak anything further or upload additional details to fill gaps.
+Here’s your revised README.md with improved formatting, headings, separators, and organization to make it look cleaner and more structured on GitHub:
 
-Clipbook
+# Clipbook
 
-“Capture and cherish life’s meaningful moments, one 10-second clip at a time.”
+> “Capture and cherish life’s meaningful moments, one 10-second clip at a time.”
 
- 
+---
 
- 
+## Table of Contents
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Installation](#installation)
+4. [Usage](#usage)
+5. [Technologies Used](#technologies-used)
+6. [Contributing](#contributing)
+7. [License](#license)
+8. [Contact](#contact)
 
- 
+---
 
-Table of Contents
-	1.	Overview
-	2.	Features
-	3.	Installation
-	4.	Usage
-	5.	Technologies Used
-	6.	Contributing
-	7.	License
-	8.	Contact
+## Overview
 
-Overview
-
-What is Clipbook?
+### What is Clipbook?
 
 Clipbook is a lightweight iOS app designed to distill your day into a 10-second video journal. By offering features such as pause/resume recording and clip merging, it empowers users to document their lives meaningfully without the overwhelm of over-recording.
 
 This app encourages mindfulness by helping users focus on living in the moment while capturing highlights. The project reflects a passion for journaling and thoughtful storytelling.
 
-Why Clipbook?
+### Why Clipbook?
 
 Many users film entire events like vacations or theme park rides, losing the essence of the experience. Clipbook solves this by limiting recordings to short, impactful clips, ideal for journaling and reflecting on meaningful memories.
 
-Prototype Shown
-https://youtube.com/shorts/qcgE_hnMP8s
+---
 
-Functionalities Shown
-https://youtube.com/shorts/1kagFJuxOE4 
+### Prototype Shown  
+[Watch on YouTube](https://youtube.com/shorts/qcgE_hnMP8s)
 
+### Functionalities Shown  
+[Watch on YouTube](https://youtube.com/shorts/1kagFJuxOE4)
 
+---
 
-Features
-	•	Pause and Resume Recording: Take breaks mid-shot and resume seamlessly.
-	•	10-Second Clip Limit: Encourages brevity and thoughtful capture.
-	•	Merge Multiple Clips: Combine multiple moments into a cohesive daily journal.
-	•	Visual Timer Progress Bar: See remaining recording time in real-time.
-	•	FileManager-Based Storage: Saves recordings locally for simplicity and privacy.
-	•	Preview and Save: Review your clips before finalizing and saving.
+## Features
 
-Installation
+- **Pause and Resume Recording**: Take breaks mid-shot and resume seamlessly.
+- **10-Second Clip Limit**: Encourages brevity and thoughtful capture.
+- **Merge Multiple Clips**: Combine multiple moments into a cohesive daily journal.
+- **Visual Timer Progress Bar**: See remaining recording time in real-time.
+- **FileManager-Based Storage**: Saves recordings locally for simplicity and privacy.
+- **Preview and Save**: Review your clips before finalizing and saving.
 
-Prerequisites
-	•	macOS with Xcode 14.0+ installed.
-	•	An iOS device running iOS 15 or later (or simulator).
+---
 
-Steps
-	1.	Clone the repository:
+## Installation
 
-git clone https://github.com/username/clipbook.git
+### Prerequisites
 
+- macOS with Xcode 14.0+ installed.
+- An iOS device running iOS 15 or later (or simulator).
+
+### Steps
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/username/clipbook.git
 
 	2.	Open the project in Xcode:
 
@@ -122,4 +126,3 @@ Contact
 Questions or feedback? Feel free to reach out!
 	•	GitHub: @stinojones
 	•	Email: austinjonesajj333@gmail.com
-
