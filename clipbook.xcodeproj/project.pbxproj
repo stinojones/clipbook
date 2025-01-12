@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		8939B2832CEDAB9800DB56E3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 8939B2822CEDAB9800DB56E3 /* FirebaseCore */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		89F5F3BC2CA9FD1F0006CFC0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -78,7 +74,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8939B2832CEDAB9800DB56E3 /* FirebaseCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,7 +129,6 @@
 			);
 			name = clipbook;
 			packageProductDependencies = (
-				8939B2822CEDAB9800DB56E3 /* FirebaseCore */,
 			);
 			productName = clipbook;
 			productReference = 89F5F3AB2CA9FD1E0006CFC0 /* clipbook.app */;
@@ -216,7 +210,6 @@
 			mainGroup = 89F5F3A22CA9FD1E0006CFC0;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				89A96BEA2CEDA772009930E6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 89F5F3AC2CA9FD1E0006CFC0 /* Products */;
@@ -581,25 +574,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		89A96BEA2CEDA772009930E6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 11.5.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		8939B2822CEDAB9800DB56E3 /* FirebaseCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 89A96BEA2CEDA772009930E6 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCore;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 89F5F3A32CA9FD1E0006CFC0 /* Project object */;
 }

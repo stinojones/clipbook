@@ -3,11 +3,9 @@ import AVFoundation
 
 class VideoManager: ObservableObject {
     
-    @Published var previewURL: URL?
-    
     @Published var hasClips: Bool = false
     
-    private let clipsDirectory: URL
+    let clipsDirectory: URL
     
     init() {
         
@@ -51,7 +49,7 @@ class VideoManager: ObservableObject {
         // Moves clip with clipname to clipsDirectory
         DispatchQueue.global(qos: .background).async {
             do {
-                try FileManager.default.moveItem(at: tempURL, to: destinationURL)
+                try FileManager.default.copyItem(at: tempURL, to: destinationURL)
 
                 // Ensure updates are performed on the main thread
                 DispatchQueue.main.async {
@@ -79,118 +77,118 @@ class VideoManager: ObservableObject {
     }
     
     
-    // Fetch All Clips from Directory and Merge Them
-    func mergeClipsForPreview(completion: @escaping (_ previewURL: URL?) -> ()) {
-        // Check if clips are available
-        guard hasClips else {
-            print("No clips available to merge.")
-            DispatchQueue.main.async {
-                completion(nil)
-            }
-            return
-        }
-        
-        // Fetch all video clips from the directory
-        guard let clips = getAllClips(), !clips.isEmpty else {
-            print("No clips available to merge.")
-            DispatchQueue.main.async {
-                completion(nil)
-            }
-            return
-        }
-
-        // If there is only one clip, return it directly
-        if clips.count == 1 {
-            hasClips = true
-            print("Only one clip available, returning it as preview.")
-            DispatchQueue.main.async {
-                completion(clips.first)
-            }
-            return
-        }
-
-        // Convert the URLs to AVURLAsset objects
-        let assets = clips.compactMap { AVURLAsset(url: $0) }
-
-        // Call the mergeVideo function to merge the assets into one
-        mergeVideo(assets: assets) { exporter in
-            exporter.exportAsynchronously {
-                if exporter.status == .failed {
-                    print(exporter.error?.localizedDescription ?? "Export failed")
-                    DispatchQueue.main.async {
-                        completion(nil)
-                    }
-                } else {
-                    if let finalURL = exporter.outputURL {
-                        print("Merged video created at: \(finalURL)")
-                        DispatchQueue.main.async {
-                            completion(finalURL)
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            completion(nil)
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    
-    // Merge Videos
-    func mergeVideo(assets: [AVURLAsset], completion: @escaping (_ exporter: AVAssetExportSession) -> ()) {
-        let composition = AVMutableComposition()
-        var lastTime: CMTime = .zero
-        
-        guard let videoTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: Int32(kCMPersistentTrackID_Invalid)) else { return }
-        guard let audioTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: Int32(kCMPersistentTrackID_Invalid)) else { return }
-        
-        for asset in assets {
-            do {
-                // Insert the video and audio from each asset
-                try videoTrack.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: asset.tracks(withMediaType: .video)[0], at: lastTime)
-                if let audio = asset.tracks(withMediaType: .audio).first {
-                    try audioTrack.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: audio, at: lastTime)
-                }
-            } catch {
-                print("Error inserting time range: \(error.localizedDescription)")
-            }
-            lastTime = CMTimeAdd(lastTime, asset.duration)
-        }
-        
-        // Set up the video composition and instructions
-        let layerInstructions = AVMutableVideoCompositionLayerInstruction(assetTrack: videoTrack)
-        
-        // MARK: - Rotating Video to be normal
-        var transform = CGAffineTransform.identity
-        transform = transform.rotated(by: 90 * (.pi / 180))
-        transform = transform.translatedBy(x: 0, y: -videoTrack.naturalSize.height)
-        layerInstructions.setTransform(transform, at: .zero)
-        
-        let instructions = AVMutableVideoCompositionInstruction()
-        instructions.timeRange = CMTimeRange(start: .zero, duration: lastTime)
-        instructions.layerInstructions = [layerInstructions]
-        
-        let videoComposition = AVMutableVideoComposition()
-        videoComposition.renderSize = CGSize(width: videoTrack.naturalSize.height, height: videoTrack.naturalSize.width)
-        videoComposition.instructions = [instructions]
-        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
-        
-        // MARK: - Temp Output URL
-        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("mergedVideo_\(Date().timeIntervalSince1970).mov")
-        
-        
-        
-        
-        // Set up the export session
-        guard let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else { return }
-        exporter.outputFileType = .mov
-        exporter.outputURL = tempURL
-        exporter.videoComposition = videoComposition
-        
-        // Pass the exporter back in the completion handler
-        completion(exporter)
-    }
+//    // Fetch All Clips from Directory and Merge Them
+//    func mergeClipsForPreview(completion: @escaping (_ previewURL: URL?) -> ()) {
+//        // Check if clips are available
+//        guard hasClips else {
+//            print("No clips available to merge.")
+//            DispatchQueue.main.async {
+//                completion(nil)
+//            }
+//            return
+//        }
+//        
+//        // Fetch all video clips from the directory
+//        guard let clips = getAllClips(), !clips.isEmpty else {
+//            print("No clips available to merge.")
+//            DispatchQueue.main.async {
+//                completion(nil)
+//            }
+//            return
+//        }
+//
+//        // If there is only one clip, return it directly
+//        if clips.count == 1 {
+//            hasClips = true
+//            print("Only one clip available, returning it as preview.")
+//            DispatchQueue.main.async {
+//                completion(clips.first)
+//            }
+//            return
+//        }
+//
+//        // Convert the URLs to AVURLAsset objects
+//        let assets = clips.compactMap { AVURLAsset(url: $0) }
+//
+//        // Call the mergeVideo function to merge the assets into one
+//        mergeVideo(assets: assets) { exporter in
+//            exporter.exportAsynchronously {
+//                if exporter.status == .failed {
+//                    print(exporter.error?.localizedDescription ?? "Export failed")
+//                    DispatchQueue.main.async {
+//                        completion(nil)
+//                    }
+//                } else {
+//                    if let finalURL = exporter.outputURL {
+//                        print("Merged video created at: \(finalURL)")
+//                        DispatchQueue.main.async {
+//                            completion(finalURL)
+//                        }
+//                    } else {
+//                        DispatchQueue.main.async {
+//                            completion(nil)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    
+//    
+//    // Merge Videos
+//    func mergeVideo(assets: [AVURLAsset], completion: @escaping (_ exporter: AVAssetExportSession) -> ()) {
+//        let composition = AVMutableComposition()
+//        var lastTime: CMTime = .zero
+//        
+//        guard let videoTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: Int32(kCMPersistentTrackID_Invalid)) else { return }
+//        guard let audioTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: Int32(kCMPersistentTrackID_Invalid)) else { return }
+//        
+//        for asset in assets {
+//            do {
+//                // Insert the video and audio from each asset
+//                try videoTrack.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: asset.tracks(withMediaType: .video)[0], at: lastTime)
+//                if let audio = asset.tracks(withMediaType: .audio).first {
+//                    try audioTrack.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: audio, at: lastTime)
+//                }
+//            } catch {
+//                print("Error inserting time range: \(error.localizedDescription)")
+//            }
+//            lastTime = CMTimeAdd(lastTime, asset.duration)
+//        }
+//        
+//        // Set up the video composition and instructions
+//        let layerInstructions = AVMutableVideoCompositionLayerInstruction(assetTrack: videoTrack)
+//        
+//        // MARK: - Rotating Video to be normal
+//        var transform = CGAffineTransform.identity
+//        transform = transform.rotated(by: 90 * (.pi / 180))
+//        transform = transform.translatedBy(x: 0, y: -videoTrack.naturalSize.height)
+//        layerInstructions.setTransform(transform, at: .zero)
+//        
+//        let instructions = AVMutableVideoCompositionInstruction()
+//        instructions.timeRange = CMTimeRange(start: .zero, duration: lastTime)
+//        instructions.layerInstructions = [layerInstructions]
+//        
+//        let videoComposition = AVMutableVideoComposition()
+//        videoComposition.renderSize = CGSize(width: videoTrack.naturalSize.height, height: videoTrack.naturalSize.width)
+//        videoComposition.instructions = [instructions]
+//        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
+//        
+//        // MARK: - Temp Output URL
+//        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("mergedVideo_\(Date().timeIntervalSince1970).mov")
+//        
+//        
+//        
+//        
+//        // Set up the export session
+//        guard let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else { return }
+//        exporter.outputFileType = .mov
+//        exporter.outputURL = tempURL
+//        exporter.videoComposition = videoComposition
+//        
+//        // Pass the exporter back in the completion handler
+//        completion(exporter)
+//    }
     
     
     // Get All Clips (Fetch Videos Dynamically from Directory)
@@ -220,7 +218,7 @@ class VideoManager: ObservableObject {
     
     
     // Clear All Recorded Files
-    func clearRecordedFiles() {
+    func resetAllClips() {
         DispatchQueue.global(qos: .background).async {
             do {
                 let fileURLs = try FileManager.default.contentsOfDirectory(at: self.clipsDirectory, includingPropertiesForKeys: nil)

@@ -4,7 +4,7 @@ import AVKit
 struct Home: View {
     @StateObject var cameraModel = CameraViewModel()
     @ObservedObject var videoManager = VideoManager()
-    @State private var isLoading: Bool = false // Tracks loading state
+    
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -22,19 +22,15 @@ struct Home: View {
                     if cameraModel.clipCount > 0 {
                         videoManager.undoLastClip()
                         cameraModel.undoLastClip()
+                        cameraModel.undoTempvideo()
                     }
                 } label: {
                     Group {
-                        if videoManager.hasClipsInDirectory() {
                             Label {
                                 Image(systemName: "arrow.uturn.backward.circle")
                                     .font(.callout)
                             } icon: {}
                             .foregroundColor(.black)
-                        } else {
-                            Image(systemName: "arrow.uturn.backward.circle")
-                                .foregroundColor(.gray)
-                        }
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 8)
@@ -76,34 +72,21 @@ struct Home: View {
                 
                 // Preview Button
                 Button {
-                    if videoManager.hasClipsInDirectory() && !isLoading {
-                        isLoading = true // Start loading
-                        videoManager.mergeClipsForPreview { previewURL in
-                            DispatchQueue.main.async {
-                                if let previewURL = previewURL {
-                                    videoManager.previewURL = previewURL
-                                    cameraModel.showPreview.toggle()
-                                } else {
-                                    print("Failed to create preview URL.")
-                                }
-                                isLoading = false // End loading
-                            }
-                        }
+                    if cameraModel.previewURL != nil {
+                        cameraModel.showPreview.toggle()
                     }
                 } label: {
                     Group {
-                        if isLoading {
+                        if cameraModel.previewURL == nil && !cameraModel.recordedURLs.isEmpty {
                             ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .black)) // Black tinted loading indicator
-                        } else if videoManager.hasClipsInDirectory() {
-                            Label {
-                                Image(systemName: "play.circle")
-                                    .font(.callout)
-                            } icon: {}
-                            .foregroundColor(.black)
+                                .tint(.black)
+                        } else if let _ = cameraModel.previewURL {
+                            // If previewURL exists, show play icon and automatically toggle on completion
+                            Image(systemName: "play.circle")
+                                .foregroundColor(.black)
                         } else {
                             Image(systemName: "play.circle")
-                                .foregroundColor(.gray)
+                                .foregroundColor(.black)
                         }
                     }
                     .padding(.horizontal, 20)
@@ -116,13 +99,12 @@ struct Home: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.trailing)
                 .opacity(cameraModel.isRecording || UserDefaults.standard.integer(forKey: "clipCount") <= 0 ? 0 : 1)
-                .disabled(isLoading) // Disable while loading
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
             .padding(.bottom, 30)
         }
         .sheet(isPresented: $cameraModel.showPreview) {
-            FinalPreview(cameraModel: cameraModel, videoManager: videoManager)
+            FinalPreview(cameraModel: cameraModel)
                 .gesture(
                     DragGesture()
                         .onChanged { value in
@@ -144,14 +126,13 @@ struct Home: View {
 
 struct FinalPreview: View {
     @ObservedObject var cameraModel: CameraViewModel
-    var videoManager: VideoManager
     @State private var player: AVPlayer?
     @State private var isPlaying: Bool = true
     
     var body: some View {
         GeometryReader { proxy in
             let size = proxy.size
-            if let previewURL = videoManager.previewURL {
+            if let previewURL = cameraModel.previewURL {
                 VideoPlayer(player: player)
                     .onAppear {
                         // Initialize player and start playback automatically
