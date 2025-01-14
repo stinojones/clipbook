@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		89BCD7EE2D35FD9100DC0E94 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 89BCD7ED2D35FD9100DC0E94 /* GoogleService-Info.plist */; };
+		89BCD7F32D360BD200DC0E94 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 89BCD7F22D360BD200DC0E94 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,7 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		89BCD7ED2D35FD9100DC0E94 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		89BCD7F22D360BD200DC0E94 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		89F5F3AB2CA9FD1E0006CFC0 /* clipbook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clipbook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F5F3BB2CA9FD1F0006CFC0 /* clipbookTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clipbookTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F5F3C52CA9FD1F0006CFC0 /* clipbookUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clipbookUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,7 +102,7 @@
 			children = (
 				89F5F3AC2CA9FD1E0006CFC0 /* Products */,
 				89F5F3EA2CAA00210006CFC0 /* clipbook */,
-				89BCD7ED2D35FD9100DC0E94 /* GoogleService-Info.plist */,
+				89BCD7F22D360BD200DC0E94 /* GoogleService-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -233,7 +233,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				89BCD7EE2D35FD9100DC0E94 /* GoogleService-Info.plist in Resources */,
+				89BCD7F32D360BD200DC0E94 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
