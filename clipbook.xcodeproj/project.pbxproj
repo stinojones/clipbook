@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8919707C2D36211E00B7F2F5 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 8919707B2D36211E00B7F2F5 /* FirebaseCore */; };
 		891E5A832D361DA20072F34C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 891E5A822D361DA20072F34C /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -77,6 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8919707C2D36211E00B7F2F5 /* FirebaseCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,12 +99,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8919707A2D36211E00B7F2F5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		89F5F3A22CA9FD1E0006CFC0 = {
 			isa = PBXGroup;
 			children = (
 				89F5F3AC2CA9FD1E0006CFC0 /* Products */,
 				89F5F3EA2CAA00210006CFC0 /* clipbook */,
 				891E5A822D361DA20072F34C /* GoogleService-Info.plist */,
+				8919707A2D36211E00B7F2F5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -133,6 +143,7 @@
 			);
 			name = clipbook;
 			packageProductDependencies = (
+				8919707B2D36211E00B7F2F5 /* FirebaseCore */,
 			);
 			productName = clipbook;
 			productReference = 89F5F3AB2CA9FD1E0006CFC0 /* clipbook.app */;
@@ -595,6 +606,14 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8919707B2D36211E00B7F2F5 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 89BCD7EF2D36037500DC0E94 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 89F5F3A32CA9FD1E0006CFC0 /* Project object */;
 }
