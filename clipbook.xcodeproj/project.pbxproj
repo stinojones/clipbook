@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		89BCD7EE2D35FD9100DC0E94 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 89BCD7ED2D35FD9100DC0E94 /* GoogleService-Info.plist */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		89F5F3BC2CA9FD1F0006CFC0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		89BCD7ED2D35FD9100DC0E94 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		89F5F3AB2CA9FD1E0006CFC0 /* clipbook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clipbook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F5F3BB2CA9FD1F0006CFC0 /* clipbookTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clipbookTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89F5F3C52CA9FD1F0006CFC0 /* clipbookUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clipbookUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -36,7 +41,6 @@
 				App/clipbookApp.swift,
 				App/ContentView.swift,
 				Model/VideoManager.swift,
-				"Service/GoogleService-Info.plist",
 				View/Assets.xcassets,
 				View/CameraView.swift,
 				View/Home.swift,
@@ -50,7 +54,6 @@
 				App/clipbookApp.swift,
 				App/ContentView.swift,
 				Model/VideoManager.swift,
-				"Service/GoogleService-Info.plist",
 				View/Assets.xcassets,
 			);
 			target = 89F5F3C42CA9FD1F0006CFC0 /* clipbookUITests */;
@@ -99,6 +102,7 @@
 			children = (
 				89F5F3AC2CA9FD1E0006CFC0 /* Products */,
 				89F5F3EA2CAA00210006CFC0 /* clipbook */,
+				89BCD7ED2D35FD9100DC0E94 /* GoogleService-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -228,6 +232,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89BCD7EE2D35FD9100DC0E94 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -415,8 +420,10 @@
 				DEVELOPMENT_TEAM = HG476GP7H7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = clipbook/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Access to save videos to photo library";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -446,8 +453,10 @@
 				DEVELOPMENT_TEAM = HG476GP7H7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = clipbook/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Access to save videos to photo library";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

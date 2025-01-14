@@ -1,5 +1,6 @@
 import SwiftUI
 import AVKit
+import Photos
 
 struct Home: View {
     @StateObject var cameraModel = CameraViewModel()
@@ -128,35 +129,101 @@ struct FinalPreview: View {
     @ObservedObject var cameraModel: CameraViewModel
     @State private var player: AVPlayer?
     @State private var isPlaying: Bool = true
+    @State private var saveSuccessMessage: String?
     
     var body: some View {
         GeometryReader { proxy in
             let size = proxy.size
-            if let previewURL = cameraModel.previewURL {
-                VideoPlayer(player: player)
-                    .onAppear {
-                        // Initialize player and start playback automatically
-                        if player == nil {
-                            player = AVPlayer(url: previewURL)
-                            player?.play()
+            ZStack {
+                if let previewURL = cameraModel.previewURL {
+                    VideoPlayer(player: player)
+                        .onAppear {
+                            // Initialize player and start playback automatically
+                            if player == nil {
+                                player = AVPlayer(url: previewURL)
+                                player?.play()
+                            }
                         }
+                        .onChange(of: isPlaying) { newValue in
+                            if newValue {
+                                player?.play()
+                            } else {
+                                player?.pause()
+                            }
+                        }
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: size.width, height: size.height)
+                        .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+                        .onDisappear {
+                            player?.pause() // Pause the video when it disappears
+                        }
+                } else {
+                    Text("Loading preview...")
+                        .foregroundColor(.white)
+                }
+                
+                // Save button in the top-right corner
+                VStack {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            saveVideoToPhotoAlbum(url: cameraModel.previewURL)
+                        }) {
+                            Image(systemName: "square.and.arrow.down")
+                                .font(.title)
+                                .foregroundColor(.white)
+                                .padding(10)
+                                .background(Color.black.opacity(0.5))
+                                .clipShape(Circle())
+                        }
+                        .padding()
                     }
-                    .onChange(of: isPlaying) { newValue in
-                        if newValue {
-                            player?.play()
+                    Spacer()
+                }
+                
+                // Show success message
+                if let message = saveSuccessMessage {
+                    Text(message)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.black.opacity(0.7))
+                        .cornerRadius(10)
+                        .transition(.opacity)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                withAnimation {
+                                    saveSuccessMessage = nil
+                                }
+                            }
+                        }
+                }
+            }
+        }
+    }
+    
+    // Helper function to save the video to the photo album
+    func saveVideoToPhotoAlbum(url: URL?) {
+        guard let url = url else { return }
+        
+        // Prompt the user for photo library access
+        PHPhotoLibrary.requestAuthorization { status in
+            if status == .authorized {
+                // Save video to photo library
+                PHPhotoLibrary.shared().performChanges({
+                    PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url)
+                }) { success, error in
+                    DispatchQueue.main.async {
+                        if success {
+                            saveSuccessMessage = "Clip Saved!"
                         } else {
-                            player?.pause()
+                            saveSuccessMessage = "Failed to save video."
                         }
                     }
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: size.width, height: size.height)
-                    .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
-                    .onDisappear {
-                        player?.pause() // Pause the video when it disappears
-                    }
+                }
             } else {
-                Text("Loading preview...")
-                    .foregroundColor(.white)
+                DispatchQueue.main.async {
+                    saveSuccessMessage = "Photo Library access denied."
+                }
             }
         }
     }

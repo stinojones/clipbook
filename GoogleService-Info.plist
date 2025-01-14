@@ -3,32 +3,28 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyD8ZOCjBnye1o5ZkIbl16M14VzKyQzPyRQ</string>
+	<string>AIzaSyA2YatfxAgHWUP1VhIdI-F-p3ys9-m7Alc</string>
 	<key>GCM_SENDER_ID</key>
-	<string>1020032488152</string>
+	<string>857448101639</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>stino.clipbook</string>
 	<key>PROJECT_ID</key>
-	<string>clipbook-4f0be</string>
+	<string>clipbook-c8922</string>
 	<key>STORAGE_BUCKET</key>
-	<string>clipbook-4f0be.firebasestorage.app</string>
+	<string>clipbook-c8922.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_GCM_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true/>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
+	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1020032488152:ios:2f0aee8c1ee63944c1bdad</string>
+	<string>1:857448101639:ios:30c12134f63dbbb41137a2</string>
 </dict>
 </plist>
